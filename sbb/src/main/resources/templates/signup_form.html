@@ -1,0 +1,49 @@
+<html layout:decorate="~{layout}">
+    <div layout:fragment="content" class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">회원가입</h4>
+
+                        <form th:action="@{/user/signup}" th:object="${userCreateForm}" method="post">
+                            <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+
+                            <div class="mb-3">
+                                <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                    <input type="radio" th:field="*{Role}" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" value="STUDENT" checked>
+                                    <label class="btn btn-outline-primary w-50" for="btnradio1">학생</label>
+
+                                    <input type="radio" th:field="*{Role}" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" value="TEACHER">
+                                    <label class="btn btn-outline-primary w-50" for="btnradio2">선생님</label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label">사용자ID</label>
+                                <input type="text" th:field="*{username}" class="form-control" id="username" placeholder="아이디를 입력하세요" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password1" class="form-label">비밀번호</label>
+                                <input type="password" th:field="*{password1}" class="form-control" id="password1" placeholder="비밀번호를 입력하세요" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password2" class="form-label">비밀번호 확인</label>
+                                <input type="password" th:field="*{password2}" class="form-control" id="password2" placeholder="비밀번호를 다시 입력하세요" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">이메일</label>
+                                <input type="email" th:field="*{email}" class="form-control" id="email" placeholder="이메일을 입력하세요" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">회원가입</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</html>

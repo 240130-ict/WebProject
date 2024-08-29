@@ -1,0 +1,81 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container my-5">
+    <!-- 질문 -->
+    <div class="board-header">
+        <h1 th:text="${communityQuestion.subject}">질문등록</h1>
+    </div>
+    <div class="card my-4">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;" th:text="${communityQuestion.content}"></div>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="text-muted small">
+                    <span th:if="${communityQuestion.author != null}" th:text="${communityQuestion.author.username}"></span>
+                    <span class="mx-2">|</span>
+                    <span th:text="${#temporals.format(communityQuestion.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+                </div>
+                <div>
+                    <a th:href="@{|/communityquestion/modify/${communityQuestion.id}|}"
+                       class="btn btn-sm btn-outline-secondary me-2"
+                       sec:authorize="isAuthenticated()"
+                       th:if="${communityQuestion.author != null and #authentication.getPrincipal().getUsername() == communityQuestion.author.username}"
+                       th:text="수정"></a>
+                    <a href="javascript:void(0);" th:data-uri="@{|/communityquestion/delete/${communityQuestion.id}|}"
+                       class="delete btn btn-sm btn-outline-secondary"
+                       sec:authorize="isAuthenticated()"
+                       th:if="${communityQuestion.author != null and #authentication.getPrincipal().getUsername() == communityQuestion.author.username}"
+                       th:text="삭제"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 답변의 갯수 표시 -->
+    <h5 class="border-bottom my-4 py-2" th:text="|${#lists.size(communityQuestion.communityAnswerlist)}개의 답변이 있습니다.|"></h5>
+
+    <!-- 답변 반복 시작 -->
+    <div class="card my-3" th:each="communityAnswer : ${communityQuestion.communityAnswerlist}">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;" th:text="${communityAnswer.content}"></div>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="text-muted small">
+                    <span th:if="${communityAnswer.author != null}" th:text="${communityAnswer.author.username}"></span>
+                    <span class="mx-2">|</span>
+                    <span th:text="${#temporals.format(communityAnswer.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+                </div>
+                <div>
+                    <a th:href="@{|/communityanswer/modify/${communityAnswer.id}|}"
+                       class="btn btn-sm btn-outline-secondary me-2"
+                       sec:authorize="isAuthenticated()"
+                       th:if="${communityAnswer.author != null and #authentication.getPrincipal().getUsername() == communityAnswer.author.username}"
+                       th:text="수정"></a>
+                    <a href="javascript:void(0);" th:data-uri="@{|/communityanswer/delete/${communityAnswer.id}|}"
+                       class="delete btn btn-sm btn-outline-secondary"
+                       sec:authorize="isAuthenticated()"
+                       th:if="${communityAnswer.author != null and #authentication.getPrincipal().getUsername() == communityAnswer.author.username}"
+                       th:text="삭제"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 답변 반복 끝 -->
+
+    <!-- 답변 작성 -->
+    <form th:action="@{|/communityanswer/create/${communityQuestion.id}|}" th:object="${communityAnswerForm}" method="post" class="my-4">
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+        <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control" rows="5" placeholder="로그인 후 답변을 작성할 수 있습니다."></textarea>
+        <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="form-control" rows="5" placeholder="답변을 입력하세요" required></textarea>
+        <input type="submit" value="답변등록" class="btn btn-primary my-2" sec:authorize="isAuthenticated()">
+    </form>
+</div>
+
+<script layout:fragment="script" type="text/javascript">
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            if (confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            }
+        });
+    });
+</script>
+</html>

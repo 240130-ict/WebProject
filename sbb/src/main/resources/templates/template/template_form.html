@@ -1,0 +1,142 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container my-5">
+    <div class="my-3">
+        <div class="board-header">
+            <h1>문제 등록</h1>
+        </div>
+    <form th:action="@{/template/create}" th:object="${templateForm}" method="post" id="temp">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+        <div class="mb-4">
+            <label for="templateName" class="form-label">제목</label>
+            <input type="text" th:field="*{templateName}" id="templateName" class="form-control" placeholder="제목을 입력하세요" required>
+        </div>
+       <div class="mb-4">
+           <label for="templateSubject" class="form-label">과목</label>
+           <select th:field="*{templateSubject}" class="form-select" aria-label="과목 선택" required>
+               <option value="" selected>과목을 선택하세요</option>
+               <option value="국어">국어</option>
+               <option value="수학">수학</option>
+               <option value="영어">영어</option>
+           </select>
+       </div>
+        <div style="display: none;">
+            <label for ="templateId" class="form-label">템플릿ID</label>
+            <input type="text" th:field="*{templateId}" id="templateId" class="form-control">
+        </div>
+        <input type="button" value="다음" class="btn btn-primary my-2" id="form">
+
+    </form>
+    <iframe id="eformsign_iframe" width="1440" height="1024"></iframe>
+    </div>
+    <script>
+        var eformsign = new EformSignTemplate();
+        var template_option = {
+            "company": {
+                "id": "d556682124d249d98e3af1b5e2cf2802",
+                "country_code": "kr",
+                "user_key": ""
+            },
+            "user": {
+                "id": "wogns6521@gmail.com",
+                "access_token": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJlZm9ybXNpZ24uaWFtIiwiY29udGV4dCI6eyJjbGllbnRJZCI6IjY4MDk0ZWVhMjVhZjRhNjI5ZTI4ZGU5Y2ZlYzRlYmZjIiwiY2xpZW50S2V5IjoiZTNiM2IzZTUtMGEzMS00NTE1LWE5NzEtN2M4Y2FlNDI4NzZmIiwibWFuYWdlbWVudElkIjoiMzRhYWI4MDBjMmEwNDQwNThmZDRlZjc5OGFlY2RlY2EiLCJzY29wZXMiOiJzbWFydF9lZm9ybV9zY29wZSIsInR5cGUiOiJ1c2VyIiwidXNlck5hbWUiOiJ3b2duczY1MjFAZ21haWwuY29tIiwidXNlcklkIjoiZWNkMmU5NTZiNmJkNGU0YWI3YWU0NDU2Yjc1ZTM1NTkiLCJyZWZyZXNoVG9rZW4iOiI3MGFlYWYwNy01ZWIxLTRlOGEtODU4YS03MWYxYzZmY2IzYmYifSwiY2xhaW0iOnsiY29tcGFueV9pZCI6ImQ1NTY2ODIxMjRkMjQ5ZDk4ZTNhZjFiNWUyY2YyODAyIiwiYWNjZXNzX2tleSI6ImUwNzA3YjdmLTUxMWQtNDQ0My1hNjdhLTRkODhlZmE5MmUyZSIsIm1lbWJlcl9pZCI6IndvZ25zNjUyMUBnbWFpbC5jb20ifSwiZXhwIjoxNzI0MTMyNzI1LCJpYXQiOjE3MjQxMjkxMjV9.CK_2gNhuowjdctzG5Y5y6HCgaJ4LmGbPxDroq-q7-NkzzUe84KhbiYxA0V-547Mf5opEaYiJW7agKmCKz66_wX6i9svAStll8EjYgERTpLyYaNqkTaTyZNq8U19xpM4nWt7nzwg_HDzhyQOGwhpA3TTfUVy0zk_S8StYLfhapA0",
+                "refresh_token": "70aeaf07-5eb1-4e8a-858a-71f1c6fcb3bf"
+            },
+            "mode": {
+                "type": "01",
+                "template_id": "",
+                "template_type": "form"
+            },
+            "layout": {
+                "lang_code": "ko",
+                "header": true,
+                "footer": false
+            },
+            "prefill": {
+                "template_name": "[[${tempName}]]",
+                "step_settings": [
+                    {
+                        "step_type": "06", // 05: 참여자, 06: 검토자
+                        "step_name": "선생님",
+                        "use_mail": true,
+                        "use_sms": true,
+                        "use_alimtalk" : true,
+                        "recipients" : [
+                            {
+                                "id": "wogns6521@gmail.com",
+                                "name" : '이재훈'
+                            },
+                            {
+                                "id" : "5a3e47a2f5a04909836ddf4189d10fc4",
+                                "name" : '그룹3'
+                            }
+                        ],
+                        "auth": {
+                            "valid": {
+                                "day": '7',
+                                "hour": '7'
+                            }
+                        }
+                    }
+                ],
+                "quick_processing" : false
+            },
+            "template_file": {
+                "name": "",
+                "mime": "",
+                "data": ""
+            }
+        };
+
+        // callback option
+        var success_callback = function (response) {
+            console.log("Success callback invoked");
+            if (response.type === 'template') {
+                // console.log("Template ID:", response.template_id);
+                // console.log("Template Name:", response.template_name);
+                console.table(response.step_settings);
+                if ("-1" == response.code) {
+                    // alert("템플릿 생성되었습니다.\n" + "- document_id : " + response.template_id + "\n- title : " + response.template_name);
+                    document.getElementById("templateId").value = response.template_id;
+                    document.getElementById("templateName").value = response.template_name;
+                    document.getElementById("temp").submit();
+                } else {
+                    alert("템플릿 생성에 실패하였습니다.\n" + "- code : " + response.code + "\n- message : " + response.message);
+                }
+            }
+            window.close();
+        };
+
+        var error_callback = function (response) {
+            console.log("Error callback invoked");
+            alert("템플릿 생성에 실패하였습니다.\n" + "- code : " + response.code + "\n- message : " + response.message);
+            console.log("Error code:", response.code);
+            console.log("Error message:", response.message);
+            window.close();
+        };
+
+        var action_callback = function (response) {
+            $('#buttonList').find('button').css('display','none');      // div id=buttonList의 모든 버튼을 보이지 않도록 설정
+            $(response.data).each(function(idx, action){                // response.data의 각 값에 대해
+                $('#buttonList').find('button').each(function(idx, btn){    // div id=buttonList의 모든 버튼에서
+                    if ($(btn).attr('id').replace('btn_','') === action.code){  // 만약 data[].code에 해당하는 버튼이 있으면
+                        $(btn).attr('title',action.name).text(action.name);     // 버튼 title을 data[].name으로 설정하고
+                        $(btn).css('display', '');                              // 버튼을 보이도록 설정
+                    }
+                });
+            });
+            console.table(response.data);
+        };
+
+        document.getElementById('form').addEventListener('click', function(event){
+            template_option.prefill.template_name = document.getElementById('templateName').value;
+
+            eformsign.template(template_option, "eformsign_iframe", success_callback, error_callback, action_callback);
+            eformsign.open();
+        });
+
+
+
+    </script>
+</div>
+</html>

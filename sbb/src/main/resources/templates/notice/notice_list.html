@@ -1,0 +1,28 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container my-3">
+    <div class="container my-5">
+        <div class="board-header">
+            <h1>공지사항</h1>
+        </div>
+        <table class="table">
+            <thead class="table-dark">
+            <tr class="text-center">
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성일</th>
+                <th>수정일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center" th:each="notice : ${notices}">
+                <td th:text="${notice.id}"></td>
+                <td><a th:href="@{/notices/{id}(id=${notice.id})}" th:text="${notice.title}"></a></td>
+                <td th:text="${#temporals.format(notice.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${#temporals.format(notice.updatedDate, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{notices/create}" class="btn btn-primary">새 공지사항 작성</a>
+    </div>
+</div>
+</html>

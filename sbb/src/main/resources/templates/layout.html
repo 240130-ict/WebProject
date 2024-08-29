@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+    <!-- sbb CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <title>eformstudy</title>
+    <script src="https://www.eformsign.com/plugins/jquery/jquery.min.js"></script>
+    <!--EformSignDocument 객체-->
+    <script src="https://www.eformsign.com/lib/js/efs_embedded_v2.js"></script>
+    <!--EformSignTemplate 객체-->
+    <script src="https://www.eformsign.com/lib/js/efs_embedded_form.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+            <!--네비게이션 바-->
+            <nav th:replace="~{navbar :: navbarFragment}"></nav>
+        </header>
+    </div>
+    <!-- 기본 템플릿 안에 삽입될 내용 Start -->
+    <div class="my-3">
+        <th:block layout:fragment="content"></th:block>
+    </div>
+    <footer class="bg-dark text-white text-center py-3">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 eFormStudy. All Rights Reserved.</p>
+        </div>
+    </footer>
+    <!-- 기본 템플릿 안에 삽입될 내용 End -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <!--Bootstrap-->
+    <script th:src="@{/bootstrap.min.js}"></script>
+    <!-- 자바 스크립트 -->
+    <th:block layout:fragment="script" ></th:block>
+    <!-- 자바 스크립트 -->
+</body>
+</html>

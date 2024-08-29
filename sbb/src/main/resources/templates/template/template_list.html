@@ -1,0 +1,134 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container my-5">
+    <div class="board-header">
+        <h1>문제게시판</h1>
+    </div>
+
+    <ul class="nav-tabs">
+        <li><a href="/template/list" class="active">전체</a></li>
+        <li><a href="/template/list?kw=국어&page=0&category=subject">국어</a></li>
+        <li><a href="/template/list?kw=수학&page=0&category=subject">수학</a></li>
+        <li><a href="/template/list?kw=영어&page=0&category=subject">영어</a></li>
+    </ul>
+
+    <!-- Table -->
+    <table class="table table-striped">
+        <thead class="table-dark text-center">
+        <tr>
+            <th scope="col">구분</th>
+            <th scope="col">번호</th>
+            <th scope="col" style="width:50%">제목</th>
+            <th scope="col">글쓴이</th>
+            <th scope="col">작성일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="text-center" th:each="template, loop : ${paging}">
+            <td><span class="badge bg-secondary" th:text="${template.templateSubject}"></span></td>
+            <td th:text="${paging.getTotalElements() - (paging.number * paging.size) - loop.index}"></td>
+            <td class="text-start">
+                <a th:href="@{|/template/detail/${template.id}|}" th:text="${template.templateName}"></a>
+            </td>
+            <td>
+                <span th:if="${template.author != null}" th:text="${template.author.username}"></span>
+            </td>
+            <td th:text="${#temporals.format(template.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div th:if="${!paging.isEmpty()}" class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${!paging.hasPrevious()} ? 'disabled'">
+                <a class="page-link" th:href="@{|?page=${paging.number-1}|}">이전</a>
+            </li>
+            <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+                th:if="${page >= paging.number-5 and page <= paging.number+5}"
+                th:classappend="${page == paging.number} ? 'active'" class="page-item">
+                <a th:text="${page + 1}" class="page-link" th:href="@{|?page=${page}|}"></a>
+            </li>
+            <li class="page-item" th:classappend="${!paging.hasNext()} ? 'disabled'">
+                <a class="page-link" th:href="@{|?page=${paging.number+1}|}">다음</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <!-- Action Row -->
+    <div class="row mt-4">
+        <div class="col">
+            <a th:href="@{/template/create}" class="btn btn-primary" sec:authorize="hasRole('TEACHER')">문제 등록하기</a>
+        </div>
+        <div class="col"></div>
+        <div class="col">
+            <div class="input-group mb-3">
+                <select id="search_category" class="form-select rounded-start">
+                    <option value="templateName">제목</option>
+                    <option value="subject">과목</option>
+                    <!-- 추가적인 카테고리를 원한다면 여기 추가 -->
+                </select>
+
+                <input type="text" id="search_kw" class="form-control" placeholder="검색어 입력">
+                <button class="btn btn-primary" type="button" id="btn_search">
+                    <i class="bi bi-search"></i> 찾기
+                </button>
+            </div>
+        </div>
+
+    <!-- Search Form -->
+    <form th:action="@{/template/list}" method="get" id="searchForm">
+        <input type="hidden" id="kw" name="kw" th:value="${kw}">
+        <input type="hidden" id="page" name="page" th:value="${paging.number}">
+        <input type="hidden" id="category" name="category" th:value="${category}"></input>
+    </form>
+</div>
+
+<script layout:fragment="script" type="text/javascript">
+    // Pagination Click Handler
+    const page_elements = document.getElementsByClassName("page-link");
+    Array.from(page_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            document.getElementById('page').value = this.dataset.page;
+            document.getElementById('searchForm').submit();
+        });
+    });
+
+    // Search Button Click Handler
+    const btn_search = document.getElementById("btn_search");
+    btn_search.addEventListener('click', function() {
+        document.getElementById('kw').value = document.getElementById('search_kw').value;
+        document.getElementById('category').value= document.getElementById('search_category').value;
+        document.getElementById('page').value = 0; // 검색버튼을 클릭할 경우 0페이지부터 조회한다.
+        document.getElementById('searchForm').submit();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // 현재 URL의 쿼리 스트링을 가져옵니다.
+        const params = new URLSearchParams(window.location.search);
+        const kw = params.get('kw'); // kw 파라미터의 값을 가져옵니다.
+
+        // 모든 탭 링크를 가져옵니다.
+        const tabs = document.querySelectorAll('.nav-tabs li a');
+
+        // kw 파라미터의 값에 따라 active 클래스를 변경합니다.
+        tabs.forEach(function(tab) {
+            const href = tab.getAttribute('href');
+            if ((kw === null && href === '/template/list') || href.includes(`kw=${kw}`)) {
+                // 모든 탭에서 active 클래스를 제거합니다.
+                tabs.forEach(function(t) {
+                    t.classList.remove('active');
+                });
+
+                // 현재 탭에 active 클래스를 추가합니다.
+                tab.classList.add('active');
+            }
+        });
+    });
+
+    </script>
+</div>
+</html>
+
+
+

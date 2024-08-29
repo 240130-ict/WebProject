@@ -1,0 +1,40 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container my-5">
+    <div class="board-header">
+        <h1>내 정보</h1>
+    </div>
+
+    <!-- 오류 메시지 -->
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- 사용자 정보 테이블 -->
+    <table class="table table-bordered">
+        <thead class="table-light">
+        <tr th:if="${siteUser}">
+            <th scope="col" style="width: 20%;">항목</th>
+            <th scope="col">정보</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">ID</th>
+            <td th:text="${siteUser.username}"></td>
+        </tr>
+        <tr>
+            <th scope="row">Email</th>
+            <td th:text="${siteUser.email}"></td>
+        </tr>
+        <tr>
+            <th scope="row">회원타입</th>
+            <td>
+                <span th:if="${siteUser.role eq T(com.mysite.sbb.user.Role).STUDENT}">학생</span>
+                <span th:if="${siteUser.role eq T(com.mysite.sbb.user.Role).TEACHER}">선생님</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</html>
